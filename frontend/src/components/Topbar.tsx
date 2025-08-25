@@ -1,14 +1,14 @@
-import { SignedOut, UserButton } from "@clerk/clerk-react";
+// import { SignedOut, UserButton } from "@clerk/clerk-react";
 import { LayoutDashboardIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import SignInOAuthButtons from "./SignInOAuthButtons";
+// import SignInOAuthButtons from "./SignInOAuthButtons";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
 
 const Topbar = () => {
-	const { isAdmin } = useAuthStore();
-	console.log({ isAdmin });
+	const { isAdmin, user } = useAuthStore();
+	console.log({ isAdmin, user });
 
 	return (
 		<div
@@ -28,11 +28,17 @@ const Topbar = () => {
 					</Link>
 				)}
 
-				<SignedOut>
+				{/* <SignedOut>
 					<SignInOAuthButtons />
 				</SignedOut>
 
-				<UserButton />
+				<UserButton /> */}
+				
+				{/* Mock user display */}
+				<div className='flex items-center gap-2 text-sm'>
+					<span>Welcome, {user?.fullName || 'Demo User'}</span>
+					<img src={user?.imageUrl || '/spotify.png'} className='size-8 rounded-full' alt='User' />
+				</div>
 			</div>
 		</div>
 	);
