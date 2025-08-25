@@ -3,6 +3,22 @@ import { Message, User } from "@/types";
 import { create } from "zustand";
 import { io } from "socket.io-client";
 
+// Sample data for when backend is not available
+const sampleUsers: User[] = [
+	{
+		_id: "1",
+		clerkId: "user1",
+		fullName: "Demo User 1",
+		imageUrl: "/spotify.png",
+	},
+	{
+		_id: "2",
+		clerkId: "user2",
+		fullName: "Demo User 2",
+		imageUrl: "/spotify.png",
+	}
+];
+
 interface ChatStore {
 	users: User[];
 	isLoading: boolean;
@@ -30,7 +46,7 @@ const socket = io(baseURL, {
 });
 
 export const useChatStore = create<ChatStore>((set, get) => ({
-	users: [],
+	users: sampleUsers, // Start with sample data
 	isLoading: false,
 	error: null,
 	socket: socket,
@@ -48,7 +64,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 			const response = await axiosInstance.get("/users");
 			set({ users: response.data });
 		} catch (error: any) {
-			set({ error: error.response.data.message });
+			console.log("Using sample users due to API error:", error.message);
+			set({ users: sampleUsers });
 		} finally {
 			set({ isLoading: false });
 		}
@@ -127,7 +144,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 			const response = await axiosInstance.get(`/users/messages/${userId}`);
 			set({ messages: response.data });
 		} catch (error: any) {
-			set({ error: error.response.data.message });
+			console.log("Using empty messages due to API error:", error.message);
+			set({ messages: [] });
 		} finally {
 			set({ isLoading: false });
 		}
