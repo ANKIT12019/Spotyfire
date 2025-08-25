@@ -1,7 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useChatStore } from "@/stores/useChatStore";
-import { useAuth } from "@clerk/clerk-react";
+// import { useAuth } from "@clerk/clerk-react";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -11,7 +11,7 @@ const updateApiToken = (token: string | null) => {
 };
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-	const { getToken, userId } = useAuth();
+	// const { getToken, userId } = useAuth();
 	const [loading, setLoading] = useState(true);
 	const { checkAdminStatus } = useAuthStore();
 	const { initSocket, disconnectSocket } = useChatStore();
@@ -19,13 +19,27 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 	useEffect(() => {
 		const initAuth = async () => {
 			try {
-				const token = await getToken();
-				updateApiToken(token);
-				if (token) {
-					await checkAdminStatus();
-					// init socket
-					if (userId) initSocket(userId);
-				}
+				// Mock authentication for demo purposes
+				const mockToken = "mock-token-123";
+				const mockUserId = "mock-user-123";
+				
+				updateApiToken(mockToken);
+				
+				// Set mock admin status
+				useAuthStore.setState({ 
+					isAdmin: true, 
+					isLoading: false,
+					user: {
+						_id: mockUserId,
+						clerkId: mockUserId,
+						fullName: "Demo User",
+						imageUrl: "/spotify.png"
+					}
+				});
+				
+				// Initialize socket with mock user
+				initSocket(mockUserId);
+				
 			} catch (error: any) {
 				updateApiToken(null);
 				console.log("Error in auth provider", error);
@@ -38,7 +52,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 		// clean up
 		return () => disconnectSocket();
-	}, [getToken, userId, checkAdminStatus, initSocket, disconnectSocket]);
+	}, [initSocket, disconnectSocket]);
 
 	if (loading)
 		return (
