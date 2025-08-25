@@ -1,17 +1,21 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChatStore } from "@/stores/useChatStore";
-import { useUser } from "@clerk/clerk-react";
+// import { useUser } from "@clerk/clerk-react";
 import { HeadphonesIcon, Music, Users } from "lucide-react";
 import { useEffect } from "react";
 
 const FriendsActivity = () => {
 	const { users, fetchUsers, onlineUsers, userActivities } = useChatStore();
-	const { user } = useUser();
+	// const { user } = useUser();
+	
+	// Mock user for demo
+	const mockUser = { id: "mock-user-123" };
 
 	useEffect(() => {
-		if (user) fetchUsers();
-	}, [fetchUsers, user]);
+		// if (user) fetchUsers();
+		fetchUsers(); // Always fetch users for demo
+	}, [fetchUsers]);
 
 	return (
 		<div className='h-full bg-zinc-900 rounded-lg flex flex-col'>
@@ -22,7 +26,7 @@ const FriendsActivity = () => {
 				</div>
 			</div>
 
-			{!user && <LoginPrompt />}
+			{/* !user && <LoginPrompt /> */}
 
 			<ScrollArea className='flex-1'>
 				<div className='p-4 space-y-4'>
