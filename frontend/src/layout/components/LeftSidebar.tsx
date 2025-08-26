@@ -28,7 +28,7 @@ const LeftSidebar = () => {
 						className={cn(
 							buttonVariants({
 								variant: "ghost",
-								className: "w-full justify-start text-white hover:bg-zinc-800",
+								className: "w-full justify-start text-white hover:bg-zinc-800 transition-all duration-200 hover:translate-x-0.5",
 							})
 						)}
 					>
@@ -42,7 +42,7 @@ const LeftSidebar = () => {
 							className={cn(
 								buttonVariants({
 									variant: "ghost",
-									className: "w-full justify-start text-white hover:bg-zinc-800",
+									className: "w-full justify-start text-white hover:bg-zinc-800 transition-all duration-200 hover:translate-x-0.5",
 								})
 							)}
 						>
@@ -67,16 +67,18 @@ const LeftSidebar = () => {
 						{isLoading ? (
 							<PlaylistSkeleton />
 						) : (
-							albums.map((album) => (
+							albums.map((album, index) => (
 								<Link
 									to={`/albums/${album._id}`}
 									key={album._id}
-									className='p-2 hover:bg-zinc-800 rounded-md flex items-center gap-3 group cursor-pointer'
+									data-state='visible'
+									style={{ animationDelay: `${index * 40}ms` }}
+									className='p-2 hover:bg-zinc-800 rounded-md flex items-center gap-3 group cursor-pointer transition-all duration-200 data-[state=visible]:animate-in data-[state=visible]:fade-in-0 data-[state=visible]:slide-in-from-left-2 hover:translate-x-0.5'
 								>
 									<img
 										src={album.imageUrl}
 										alt='Playlist img'
-										className='size-12 rounded-md flex-shrink-0 object-cover'
+										className='size-12 rounded-md flex-shrink-0 object-cover transition-transform duration-200 group-hover:scale-105'
 									/>
 
 									<div className='flex-1 min-w-0 hidden md:block'>
