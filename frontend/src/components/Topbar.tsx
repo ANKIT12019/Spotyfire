@@ -5,11 +5,13 @@ import { Link } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 const Topbar = () => {
 	const { isAdmin, user } = useAuthStore();
 	console.log({ isAdmin, user });
+	const { scrollYProgress } = useScroll();
+	const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 20, restDelta: 0.001 });
 
 	return (
 		<div
@@ -48,6 +50,10 @@ const Topbar = () => {
 					<span>Welcome, {user?.fullName || 'Demo User'}</span>
 					<img src={user?.imageUrl || '/spotify.png'} className='size-8 rounded-full' alt='User' />
 				</div>
+			</div>
+			{/* Scroll progress bar */}
+			<div className='absolute left-0 bottom-0 w-full'>
+				<motion.div className='h-[2px] bg-green-500 origin-left' style={{ scaleX }} />
 			</div>
 		</div>
 	);
