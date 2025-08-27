@@ -240,7 +240,7 @@ export const useMusicStore = create<MusicStore>((set) => ({
 			console.log("Backend unavailable, fetching real songs from iTunes API:", error.message);
 			try {
 				const songs = await searchItunesSongs("arijit singh", 18);
-				set({ songs });
+				set({ songs: songs.length > 0 ? songs : sampleSongs });
 			} catch (e: any) {
 				console.log("iTunes API failed, falling back to sample songs:", e.message);
 				set({ songs: sampleSongs });
@@ -305,7 +305,7 @@ export const useMusicStore = create<MusicStore>((set) => ({
 			console.log("Backend unavailable, fetching featured from iTunes API:", error.message);
 			try {
 				const songs = await searchItunesSongs("arijit singh", 6);
-				set({ featuredSongs: songs });
+				set({ featuredSongs: songs.length > 0 ? songs : sampleSongs.slice(0, 6) });
 			} catch (e: any) {
 				set({ featuredSongs: sampleSongs.slice(0, 6) });
 			}
@@ -323,7 +323,7 @@ export const useMusicStore = create<MusicStore>((set) => ({
 			console.log("Backend unavailable, fetching made-for-you from iTunes API:", error.message);
 			try {
 				const songs = await searchItunesSongs("arijit singh acoustic", 4);
-				set({ madeForYouSongs: songs });
+				set({ madeForYouSongs: songs.length > 0 ? songs : sampleSongs.slice(0, 4) });
 			} catch (e: any) {
 				set({ madeForYouSongs: sampleSongs.slice(0, 4) });
 			}
@@ -341,7 +341,7 @@ export const useMusicStore = create<MusicStore>((set) => ({
 			console.log("Backend unavailable, fetching trending from iTunes API:", error.message);
 			try {
 				const songs = await searchItunesSongs("arijit singh hits", 6);
-				set({ trendingSongs: songs });
+				set({ trendingSongs: songs.length > 0 ? songs : sampleSongs.slice(2, 6) });
 			} catch (e: any) {
 				set({ trendingSongs: sampleSongs.slice(2, 6) });
 			}
