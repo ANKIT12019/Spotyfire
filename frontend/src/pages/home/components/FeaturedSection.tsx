@@ -1,6 +1,7 @@
 import { useMusicStore } from "@/stores/useMusicStore";
 import FeaturedGridSkeleton from "@/components/skeletons/FeaturedGridSkeleton";
 import PlayButton from "./PlayButton";
+import { motion } from "framer-motion";
 
 const FeaturedSection = () => {
 	const { isLoading, featuredSongs, error } = useMusicStore();
@@ -10,14 +11,20 @@ const FeaturedSection = () => {
 	if (error) return <p className='text-red-500 mb-4 text-lg'>{error}</p>;
 
 	return (
-		<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8'>
-			{featuredSongs.map((song, index) => (
-				<div
+		<motion.div
+			initial="hidden"
+			whileInView="show"
+			viewport={{ once: true, amount: 0.2 }}
+			variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
+			className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8'
+		>
+			{featuredSongs.map((song) => (
+				<motion.div
 					key={song._id}
-					data-state='visible'
-					style={{ animationDelay: `${index * 60}ms` }}
+					variants={{ hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0 } }}
+					transition={{ duration: 0.35, ease: "easeOut" }}
 					className='flex items-center bg-zinc-800/50 rounded-md overflow-hidden
-         hover:bg-zinc-700/50 transition-all duration-300 group cursor-pointer relative data-[state=visible]:animate-in data-[state=visible]:fade-in-0 data-[state=visible]:slide-in-from-bottom-2 hover:-translate-y-0.5'
+        hover:bg-zinc-700/50 transition-all duration-300 group cursor-pointer relative hover:-translate-y-0.5'
 				>
 					<img
 						src={song.imageUrl}
@@ -29,9 +36,9 @@ const FeaturedSection = () => {
 						<p className='text-sm text-zinc-400 truncate'>{song.artist}</p>
 					</div>
 					<PlayButton song={song} />
-				</div>
+				</motion.div>
 			))}
-		</div>
+		</motion.div>
 	);
 };
 export default FeaturedSection;

@@ -2,6 +2,7 @@ import { Song } from "@/types";
 import SectionGridSkeleton from "./SectionGridSkeleton";
 import { Button } from "@/components/ui/button";
 import PlayButton from "./PlayButton";
+import { motion } from "framer-motion";
 
 type SectionGridProps = {
 	title: string;
@@ -14,16 +15,32 @@ const SectionGrid = ({ songs, title, isLoading }: SectionGridProps) => {
 	return (
 		<div className='mb-8'>
 			<div className='flex items-center justify-between mb-4'>
-				<h2 className='text-xl sm:text-2xl font-bold'>{title}</h2>
+				<motion.h2
+					initial={{ opacity: 0, y: 10 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true }}
+					transition={{ duration: 0.35 }}
+					className='text-xl sm:text-2xl font-bold'
+				>
+					{title}
+				</motion.h2>
 				<Button variant='link' className='text-sm text-zinc-400 hover:text-white'>
 					Show all
 				</Button>
 			</div>
 
-			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+			<motion.div
+				initial="hidden"
+				whileInView="show"
+				viewport={{ once: true, amount: 0.2 }}
+				variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}
+				className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'
+			>
 				{songs.map((song) => (
-					<div
+					<motion.div
 						key={song._id}
+						variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
+						transition={{ duration: 0.35, ease: "easeOut" }}
 						className='bg-zinc-800/40 p-4 rounded-md hover:bg-zinc-700/40 transition-all group cursor-pointer'
 					>
 						<div className='relative mb-4'>
@@ -39,9 +56,9 @@ const SectionGrid = ({ songs, title, isLoading }: SectionGridProps) => {
 						</div>
 						<h3 className='font-medium mb-2 truncate'>{song.title}</h3>
 						<p className='text-sm text-zinc-400 truncate'>{song.artist}</p>
-					</div>
+					</motion.div>
 				))}
-			</div>
+			</motion.div>
 		</div>
 	);
 };
