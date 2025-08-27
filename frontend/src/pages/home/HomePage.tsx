@@ -5,6 +5,7 @@ import FeaturedSection from "./components/FeaturedSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import SectionGrid from "./components/SectionGrid";
 import { usePlayerStore } from "@/stores/usePlayerStore";
+import { motion } from "framer-motion";
 
 const HomePage = () => {
 	const {
@@ -37,13 +38,37 @@ const HomePage = () => {
 			<Topbar />
 			<ScrollArea className='h-[calc(100vh-180px)]'>
 				<div className='p-4 sm:p-6'>
-					<h1 className='text-2xl sm:text-3xl font-bold mb-6'>Good afternoon</h1>
-					<FeaturedSection />
+					<motion.h1
+						initial={{ opacity: 0, y: 12 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.5, ease: "easeOut" }}
+						className='text-2xl sm:text-3xl font-bold mb-6'
+					>
+						Good afternoon
+					</motion.h1>
+					<motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+						<FeaturedSection />
+					</motion.div>
 
-					<div className='space-y-8'>
-						<SectionGrid title='Made For You' songs={madeForYouSongs} isLoading={isLoading} />
-						<SectionGrid title='Trending' songs={trendingSongs} isLoading={isLoading} />
-					</div>
+					<motion.div
+						initial="hidden"
+						animate="show"
+						variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08 } } }}
+						className='space-y-8'
+					>
+						<motion.div
+							variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
+							transition={{ duration: 0.45, ease: "easeOut" }}
+						>
+							<SectionGrid title='Made For You' songs={madeForYouSongs} isLoading={isLoading} />
+						</motion.div>
+						<motion.div
+							variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }}
+							transition={{ duration: 0.45, ease: "easeOut" }}
+						>
+							<SectionGrid title='Trending' songs={trendingSongs} isLoading={isLoading} />
+						</motion.div>
+					</motion.div>
 				</div>
 			</ScrollArea>
 		</main>
