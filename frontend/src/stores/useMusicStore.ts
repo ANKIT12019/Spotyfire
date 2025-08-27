@@ -237,8 +237,14 @@ export const useMusicStore = create<MusicStore>((set) => ({
 			const response = await axiosInstance.get("/songs");
 			set({ songs: response.data });
 		} catch (error: any) {
-			console.log("Using sample songs due to API error:", error.message);
-			set({ songs: sampleSongs });
+			console.log("Backend unavailable, fetching real songs from iTunes API:", error.message);
+			try {
+				const songs = await searchItunesSongs("arijit singh", 18);
+				set({ songs });
+			} catch (e: any) {
+				console.log("iTunes API failed, falling back to sample songs:", e.message);
+				set({ songs: sampleSongs });
+			}
 		} finally {
 			set({ isLoading: false });
 		}
@@ -296,8 +302,13 @@ export const useMusicStore = create<MusicStore>((set) => ({
 			const response = await axiosInstance.get("/songs/featured");
 			set({ featuredSongs: response.data });
 		} catch (error: any) {
-			console.log("Using sample featured songs due to API error:", error.message);
-			set({ featuredSongs: sampleSongs.slice(0, 6) });
+			console.log("Backend unavailable, fetching featured from iTunes API:", error.message);
+			try {
+				const songs = await searchItunesSongs("arijit singh", 6);
+				set({ featuredSongs: songs });
+			} catch (e: any) {
+				set({ featuredSongs: sampleSongs.slice(0, 6) });
+			}
 		} finally {
 			set({ isLoading: false });
 		}
@@ -309,8 +320,13 @@ export const useMusicStore = create<MusicStore>((set) => ({
 			const response = await axiosInstance.get("/songs/made-for-you");
 			set({ madeForYouSongs: response.data });
 		} catch (error: any) {
-			console.log("Using sample made-for-you songs due to API error:", error.message);
-			set({ madeForYouSongs: sampleSongs.slice(0, 4) });
+			console.log("Backend unavailable, fetching made-for-you from iTunes API:", error.message);
+			try {
+				const songs = await searchItunesSongs("arijit singh acoustic", 4);
+				set({ madeForYouSongs: songs });
+			} catch (e: any) {
+				set({ madeForYouSongs: sampleSongs.slice(0, 4) });
+			}
 		} finally {
 			set({ isLoading: false });
 		}
@@ -322,10 +338,37 @@ export const useMusicStore = create<MusicStore>((set) => ({
 			const response = await axiosInstance.get("/songs/trending");
 			set({ trendingSongs: response.data });
 		} catch (error: any) {
-			console.log("Using sample trending songs due to API error:", error.message);
-			set({ trendingSongs: sampleSongs.slice(2, 6) });
+			console.log("Backend unavailable, fetching trending from iTunes API:", error.message);
+			try {
+				const songs = await searchItunesSongs("arijit singh hits", 6);
+				set({ trendingSongs: songs });
+			} catch (e: any) {
+				set({ trendingSongs: sampleSongs.slice(2, 6) });
+			}
 		} finally {
 			set({ isLoading: false });
 		}
 	},
 }));
+
+// Helper: fetch real songs from iTunes Search API and map to Song type
+async function searchItunesSongs(term: string, limit: number): Promise<Song[]> {
+	const url = `https://itunes.apple.com/search?term=${encodeURIComponent(term)}&entity=song&limit=${limit}`;
+	const res = await fetch(url);
+	if (!res.ok) throw new Error(`iTunes search failed: ${res.status}`);
+	const data = await res.json();
+	const now = new Date().toISOString();
+	return (data.results || [])
+		.filter((r: any) => r.previewUrl && r.trackId)
+		.map((r: any) => ({
+			_id: String(r.trackId),
+			title: r.trackName,
+			artist: r.artistName,
+			imageUrl: typeof r.artworkUrl100 === "string" ? r.artworkUrl100.replace("100x100bb", "512x512bb") : "/cover-images/1.jpg",
+			audioUrl: r.previewUrl,
+			duration: r.trackTimeMillis ? Math.floor(r.trackTimeMillis / 1000) : 30,
+			albumId: r.collectionId ? String(r.collectionId) : null,
+			createdAt: now,
+			updatedAt: now,
+		}));
+}
