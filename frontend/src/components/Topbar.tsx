@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
+import { motion } from "framer-motion";
 
 const Topbar = () => {
 	const { isAdmin, user } = useAuthStore();
@@ -17,8 +18,16 @@ const Topbar = () => {
     '
 		>
 			<div className='flex gap-2 items-center'>
-				<img src='/spotify.png' className='size-8' alt='Spotify logo' />
-				Spotyfire
+				<motion.img
+					src='/spotify.png'
+					className='size-8'
+					alt='Spotify logo'
+					whileHover={{ rotate: 10, scale: 1.05 }}
+					transition={{ type: "spring", stiffness: 300, damping: 18 }}
+				/>
+				<motion.span initial={{ opacity: 0, x: -6 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.3 }}>
+					Spotyfire
+				</motion.span>
 			</div>
 			<div className='flex items-center gap-4'>
 				{isAdmin && (
