@@ -3,6 +3,7 @@ import SectionGridSkeleton from "./SectionGridSkeleton";
 import { Button } from "@/components/ui/button";
 import PlayButton from "./PlayButton";
 import { motion } from "framer-motion";
+import TiltCard from "@/components/TiltCard";
 
 type SectionGridProps = {
 	title: string;
@@ -37,7 +38,7 @@ const SectionGrid = ({ songs, title, isLoading }: SectionGridProps) => {
 				className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'
 			>
 				{songs.map((song) => (
-					<motion.div
+					<TiltCard
 						key={song._id}
 						variants={{ hidden: { opacity: 0, y: 14 }, show: { opacity: 1, y: 0 } }}
 						transition={{ duration: 0.35, ease: "easeOut" }}
@@ -56,7 +57,7 @@ const SectionGrid = ({ songs, title, isLoading }: SectionGridProps) => {
 						</div>
 						<h3 className='font-medium mb-2 truncate'>{song.title}</h3>
 						<p className='text-sm text-zinc-400 truncate'>{song.artist}</p>
-					</motion.div>
+					</TiltCard>
 				))}
 			</motion.div>
 		</div>
