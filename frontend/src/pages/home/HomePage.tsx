@@ -6,6 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import SectionGrid from "./components/SectionGrid";
 import { usePlayerStore } from "@/stores/usePlayerStore";
 import { motion } from "framer-motion";
+import AnimatedBackground from "@/components/AnimatedBackground";
 
 const HomePage = () => {
 	const {
@@ -34,15 +35,17 @@ const HomePage = () => {
 	}, [initializeQueue, madeForYouSongs, trendingSongs, featuredSongs]);
 
 	return (
-		<main className='rounded-md overflow-hidden h-full bg-gradient-to-b from-zinc-800 to-zinc-900'>
+		<main className='relative rounded-md overflow-hidden h-full bg-gradient-to-b from-zinc-800 to-zinc-900'>
 			<Topbar />
+			<AnimatedBackground />
 			<ScrollArea className='h-[calc(100vh-180px)]'>
 				<div className='p-4 sm:p-6'>
 					<motion.h1
 						initial={{ opacity: 0, y: 12 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.5, ease: "easeOut" }}
-						className='text-2xl sm:text-3xl font-bold mb-6'
+						className='text-2xl sm:text-3xl font-extrabold mb-6 bg-gradient-to-r from-emerald-400 via-sky-400 to-fuchsia-400 bg-[length:200%_100%] bg-clip-text text-transparent'
+						style={{ backgroundPosition: "0% 50%" }}
 					>
 						Good afternoon
 					</motion.h1>
